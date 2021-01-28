@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-class Buttons extends StatelessWidget {
+class ButtonsWidget extends StatelessWidget {
   final Function(String direction) _click;
 
-  Buttons(this._click);
+  ButtonsWidget(this._click);
 
   @override
   Widget build(BuildContext context) {

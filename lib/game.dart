@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:snake_game/components/board_game.dart';
-import 'package:snake_game/models/snake.dart';
+import 'package:snake_game/components/board_game_widget.dart';
+import 'package:snake_game/models/body_snake_model.dart';
+import 'package:snake_game/models/food_model.dart';
+import 'package:snake_game/models/snake_model.dart';
 
 import 'components/buttons_widget.dart';
 
@@ -12,27 +14,48 @@ class Game extends StatefulWidget {
 }
 
 class _GameState extends State<Game> {
-  Snake snake = new Snake();
+  BodySnakeModel _headSnake = new BodySnakeModel(null, Colors.black45, 'right');
+  SnakeModel _snakeModel = new SnakeModel();
+  FoodModel _foodModel = new FoodModel();
+
+  void _newGame() {
+    _snakeModel.incrementBody(_headSnake);
+    _snakeModel.incrementBody(_headSnake);
+    _snakeModel.incrementBody(_headSnake);
+    _snakeModel.incrementBody(_headSnake);
+    _snakeModel.incrementBody(_headSnake);
+    _snakeModel.incrementBody(_headSnake);
+    _snakeModel.incrementBody(_headSnake);
+    _snakeModel.incrementBody(_headSnake);
+    _snakeModel.incrementBody(_headSnake);
+    _snakeModel.incrementBody(_headSnake);
+    _snakeModel.incrementBody(_headSnake);
+    _snakeModel.incrementBody(_headSnake);
+    setState(() {
+      _foodModel.changeLocation(_headSnake);
+    });
+  }
 
   void _render() {
-    Future.delayed(Duration(milliseconds: 16), () {
-      setState(() {
-        snake.checkBox();
-        snake.walk();
-        _render();
-      });
+    Future.delayed(Duration(milliseconds: 1000), () {
+      setState(() {});
     });
   }
 
   void _click(String direction) {
     setState(() {
-      snake.changeDirection(direction);
+      _headSnake.atualizarDirection();
+      if (direction != _headSnake.getDirection()) {
+        _headSnake.setDirection(direction);
+      }
+
+      _headSnake.walk();
     });
   }
 
   @override
   void initState() {
-    _render();
+    _newGame();
     super.initState();
   }
 
@@ -54,14 +77,16 @@ class _GameState extends State<Game> {
                   color: Colors.blue[900],
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-                    child: BoardGame(
-                      snake: snake,
+                    child: BoardGameWidget(
+                      snake: _snakeModel,
+                      headSnake: _headSnake,
+                      foodModel: _foodModel,
                     ),
                   )),
               Container(
                 color: Colors.blue[900],
                 width: constraints.widthConstraints().maxWidth,
-                child: Buttons(_click),
+                child: ButtonsWidget(_click),
               ),
             ]),
           ),
