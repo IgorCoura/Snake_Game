@@ -68,15 +68,19 @@ class BodySnakeModel {
     switch (_direction) {
       case 'top':
         _top = _beforeBody.top + 10;
+        _left = _beforeBody.left;
         break;
       case 'down':
         _top = _beforeBody.top - 10;
+        _left = _beforeBody._left;
         break;
       case 'left':
         _left = _beforeBody.left - 10;
+        _top = _beforeBody._top;
         break;
       case 'right':
         _left = _beforeBody.left + 10;
+        _top = _beforeBody.top;
         break;
     }
   }

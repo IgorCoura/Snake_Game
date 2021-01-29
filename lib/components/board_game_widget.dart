@@ -7,38 +7,55 @@ import 'package:snake_game/models/snake_model.dart';
 
 class BoardGameWidget extends StatelessWidget {
   final BodySnakeModel headSnake;
-  final SnakeModel snake;
+  final SnakeModel snakeModel;
   final FoodModel foodModel;
 
   BoardGameWidget({
-    @required this.snake,
+    @required this.snakeModel,
     @required this.headSnake,
     @required this.foodModel,
   });
 
+  double roundDivisibleByTen(int screenMax) {
+    while (screenMax % 10 != 0) {
+      screenMax--;
+    }
+    return screenMax.toDouble();
+  }
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (_, constraints) {
-      double screenMaxHeight = constraints.heightConstraints().maxHeight;
-      double screenMaxWidth = constraints.widthConstraints().maxWidth;
-      return Container(
-        width: screenMaxWidth,
-        height: screenMaxHeight,
-        color: Colors.grey,
-        child: Stack(
-          children: [
-            FoodWidget(
-              foodModel: this.foodModel,
+      double screenMaxHeight = roundDivisibleByTen(
+          constraints.heightConstraints().maxHeight.toInt());
+      double screenMaxWidth =
+          roundDivisibleByTen(constraints.widthConstraints().maxWidth.toInt());
+      foodModel.setScreenDimensions(screenMaxHeight, screenMaxWidth);
+      snakeModel.setScreenDimesions(screenMaxHeight, screenMaxWidth);
+      return Stack(
+        children: [
+          Center(
+            child: Container(
+              width: screenMaxWidth,
+              height: screenMaxHeight,
+              color: Colors.grey,
+              child: Stack(
+                children: [
+                  Stack(
+                    children: snakeModel.buildSnakeBody().map((b) {
+                      return SnakeBodyWidget(
+                        bodySnakeModel: b,
+                      );
+                    }).toList(),
+                  ),
+                  FoodWidget(
+                    foodModel: this.foodModel,
+                  ),
+                ],
+              ),
             ),
-            Stack(
-              children: snake.buildSnakeBody(headSnake).map((b) {
-                return SnakeBodyWidget(
-                  bodySnakeModel: b,
-                );
-              }).toList(),
-            ),
-          ],
-        ),
+          ),
+        ],
       );
     });
   }

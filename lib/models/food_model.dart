@@ -5,22 +5,23 @@ import 'package:snake_game/models/body_snake_model.dart';
 class FoodModel {
   double _top;
   double _left;
-  double _screenMaxWidth = 100;
-  double _screenMaxHeigth = 500;
+  double _screenMaxWidth = 0;
+  double _screenMaxHeigth = 0;
+  final BodySnakeModel headSnake;
+  bool _firstCall = false;
   Random rng = new Random();
 
-  void changeLocation(BodySnakeModel bodySnake) {
-    double nextTop;
-    double nextLeft;
+  FoodModel(this.headSnake) {
+    _firstCall = true;
+  }
 
-    while (bodySnake != null) {
-      do {
-        _top = _randomNumber(_screenMaxWidth);
-        _left = _randomNumber(_screenMaxHeigth);
-      } while (bodySnake.left == nextLeft && bodySnake.top == nextTop);
-      bodySnake = bodySnake.getNextBody();
+  void changeLocation() {
+    bool verified = false;
+    while (!verified) {
+      _top = _randomNumber(_screenMaxHeigth);
+      _left = _randomNumber(_screenMaxWidth);
+      verified = _checkPositionSnake(_top, _left);
     }
-    print("top: " + _top.toString() + "   left: " + _left.toString());
   }
 
   double _randomNumber(double maxNum) {
@@ -37,5 +38,25 @@ class FoodModel {
 
   double get left {
     return _left;
+  }
+
+  void setScreenDimensions(double maxHeight, double maxWidth) {
+    _screenMaxHeigth = maxHeight;
+    _screenMaxWidth = maxWidth;
+    if (_firstCall) {
+      changeLocation();
+      _firstCall = false;
+    }
+  }
+
+  bool _checkPositionSnake(double top, double left) {
+    BodySnakeModel current = headSnake;
+    while (current != null) {
+      if (current.top == top && current.left == left) {
+        return false;
+      }
+      current = current.getNextBody();
+    }
+    return true;
   }
 }
