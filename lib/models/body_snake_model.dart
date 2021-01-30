@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 class BodySnakeModel {
   Color color;
-  double _top = 0;
-  double _left = 0;
+  double _top = 50;
+  double _left = 50;
   double _velocity = 10;
   BodySnakeModel _nextBody;
   BodySnakeModel _beforeBody;

@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:snake_game/components/board_game_widget.dart';
@@ -15,34 +13,40 @@ class Game extends StatefulWidget {
 }
 
 class _GameState extends State<Game> {
+  bool running;
   BodySnakeModel _headSnake;
   SnakeModel _snakeModel;
   FoodModel _foodModel;
 
   void _newGame() {
+    running = false;
     _headSnake = new BodySnakeModel(null, Colors.black45, 'left');
     _foodModel = new FoodModel(_headSnake);
     _snakeModel = new SnakeModel(_headSnake, _foodModel, _newGame);
   }
 
-  void _render() {
-    //Future.delayed(Duration(milliseconds: 1000));
-    //sleep(Duration(seconds: 1));
-    setState(() {
-      _render();
-    });
+  void _gameLoop() async {
+    while (running) {
+      setState(() {
+        _headSnake.walk();
+      });
+      _snakeModel.checkEatFood();
+      _headSnake.atualizarDirection();
+      _snakeModel.checkHitWall();
+      _snakeModel.checkHitBody();
+      await Future.delayed(Duration(milliseconds: 200), () {});
+    }
   }
 
   void _click(String direction) {
+    if (!running) {
+      running = true;
+      _gameLoop();
+    }
     setState(() {
-      _headSnake.atualizarDirection(); //
       if (direction != _headSnake.getDirection()) {
         _headSnake.setDirection(direction);
       }
-      _headSnake.walk(); //
-      _snakeModel.checkEatFood(); //
-      _snakeModel.checkHitBody(); //
-      _snakeModel.checkHitWall(); //
     });
   }
 

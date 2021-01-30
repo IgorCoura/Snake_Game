@@ -50,6 +50,7 @@ class SnakeModel {
     while (_current != null) {
       if (_head.top == _current.top && _head.left == _current.left) {
         _restart();
+        return;
       }
       _current = _current.getNextBody();
     }
